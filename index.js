@@ -32,47 +32,46 @@ async function isAdmin(api, userId, threadID) {
 }
 
 function handleCommand(api, message, command, commandArgs, taggedUser, contentAfterTag) {
+    if (!commands[command]) {
+        api.sendMessage("Lệnh không hợp lệ. Sử dụng 'help' để xem danh sách lệnh.", message.threadID);
+        return;
+    }
+
+    const cmd = commands[command];
+
+    if (cmd.admin_only && !adminMode[message.threadID]) {
+        api.sendMessage("Lệnh này chỉ có thể sử dụng trong chế độ admin.", message.threadID);
+        return;
+    }
+
     switch(command) {
         case '.admin':
             handleAdminCommand(api, message);
             break;
         case 'hello':
-            api.sendMessage(commands.hello, message.threadID);
+        case 'time':
+            api.sendMessage(cmd.response + (command === 'time' ? new Date().toLocaleString() : ''), message.threadID);
             break;
         case 'help':
             handleHelpCommand(api, message);
             break;
-        case 'time':
-            sendCurrentTime(api, message.threadID);
-            break;
         case 'kick':
-            handleKickCommand(api, message, taggedUser);
-            break;
         case 'ban':
-            handleBanCommand(api, message, commandArgs);
+        case 'mute':
+        case 'unmute':
+            handleUserAction(api, message, command, taggedUser);
             break;
         case 'unban':
             handleUnbanCommand(api, message, commandArgs);
             break;
-        case 'mute':
-            handleMuteCommand(api, message, commandArgs);
-            break;
-        case 'unmute':
-            handleUnmuteCommand(api, message, commandArgs);
-            break;
         case 'setbd':
-            if (taggedUser && contentAfterTag) {
-                handleSetBdCommand(api, message, taggedUser, contentAfterTag);
-            } else {
-                api.sendMessage("Vui lòng tag người dùng và nhập biệt danh mới.", message.threadID);
-            }
+            handleSetBdCommand(api, message, taggedUser, contentAfterTag);
             break;
         case 'changecolor':
             handleChangeColorCommand(api, message);
             break;
         case '.ping':
-            const contentAfterCommand = message.body.substring(message.body.indexOf('.ping') + 5).trim();
-            handlePingCommand(api, message, contentAfterCommand);
+            handlePingCommand(api, message, contentAfterTag);
             break;
     }
 }
@@ -84,27 +83,35 @@ async function handleAdminCommand(api, message) {
     api.sendMessage(response, message.threadID);
 }
 
-function sendCurrentTime(api, threadID) {
-    const currentTime = new Date().toLocaleString();
-    api.sendMessage(commands.time + currentTime, threadID);
-}
-
-function handleKickCommand(api, message, taggedUser) {
+function handleUserAction(api, message, action, taggedUser) {
     if (!taggedUser) {
-        api.sendMessage("Vui lòng tag người cần kick.", message.threadID);
+        api.sendMessage(`Vui lòng tag người cần ${action}.`, message.threadID);
         return;
     }
 
-    api.removeUserFromGroup(taggedUser.id, message.threadID, (err) => {
-        if (err) {
-            console.error("Lỗi khi kick người dùng:", err);
-            api.sendMessage(`Không thể kick người dùng. Lỗi: ${err.error || err.message || JSON.stringify(err)}`, message.threadID);
-        } else {
-            const response = commands.kick
-                .replace("{user}", taggedUser.tag);
-            api.sendMessage(response, message.threadID);
+    const actions = {
+        kick: (id) => api.removeUserFromGroup(id, message.threadID),
+        ban: (id) => {
+            // Thực hiện hành động ban ở đây
+            api.removeUserFromGroup(id, message.threadID);
+            // Lưu ID người dùng vào danh sách đen (cần triển khai)
+            saveBannedUser(id, message.threadID);
+        },
+        mute: (id) => {
+            // Thực hiện hành động mute ở đây
+            setUserMuted(id, message.threadID, true);
+        },
+        unmute: (id) => {
+            // Thực hiện hành động unmute ở đây
+            setUserMuted(id, message.threadID, false);
         }
-    });
+    };
+
+    actions[action](taggedUser.id);
+    
+    const response = commands[action].response
+        .replace("{user}", taggedUser.tag);
+    api.sendMessage(response, message.threadID);
 }
 
 function handleSetBdCommand(api, message, taggedUser, newNickname) {
@@ -121,58 +128,16 @@ function handleSetBdCommand(api, message, taggedUser, newNickname) {
     });
 }
 
-function handleBanCommand(api, message, commandArgs) {
-    if (commandArgs.length < 2) {
-        api.sendMessage("Vui lòng tag người cần ban.", message.threadID);
-        return;
-    }
-    const banUser = message.mentions[Object.keys(message.mentions)[0]];
-    if (banUser) {
-        // Thực hiện hành động ban ở đây (ví dụ: thêm vào danh sách đen)
-        api.sendMessage(`Đã ban ${Object.values(message.mentions)[0]}.`, message.threadID);
-    } else {
-        api.sendMessage("Không tìm thấy người dùng để ban.", message.threadID);
-    }
-}
-
 function handleUnbanCommand(api, message, commandArgs) {
     if (commandArgs.length < 2) {
         api.sendMessage("Vui lòng nhập ID người cần unban.", message.threadID);
         return;
     }
     const unbanUserId = commandArgs[1];
-    // Thực hiện hành động unban ở đây (ví dụ: xóa khỏi danh sách đen)
+    // Thực hiện hành động unban ở đây
+    // Ví dụ: removeBannedUser(unbanUserId, message.threadID);
     api.sendMessage(`Đã unban người dùng có ID ${unbanUserId}.`, message.threadID);
 }
-
-function handleMuteCommand(api, message, commandArgs) {
-    if (commandArgs.length < 2) {
-        api.sendMessage("Vui lòng tag người cần mute.", message.threadID);
-        return;
-    }
-    const muteUser = message.mentions[Object.keys(message.mentions)[0]];
-    if (muteUser) {
-        // Thực hiện hành động mute ở đây
-        api.sendMessage(`Đã mute ${Object.values(message.mentions)[0]}.`, message.threadID);
-    } else {
-        api.sendMessage("Không tìm thấy người dùng để mute.", message.threadID);
-    }
-}
-
-function handleUnmuteCommand(api, message, commandArgs) {
-    if (commandArgs.length < 2) {
-        api.sendMessage("Vui lòng tag người cần unmute.", message.threadID);
-        return;
-    }
-    const unmuteUser = message.mentions[Object.keys(message.mentions)[0]];
-    if (unmuteUser) {
-        // Thực hiện hành động unmute ở đây
-        api.sendMessage(`Đã unmute ${Object.values(message.mentions)[0]}.`, message.threadID);
-    } else {
-        api.sendMessage("Không tìm thấy người dùng để unmute.", message.threadID);
-    }
-}
-
 
 function handleChangeColorCommand(api, message) {
     api.changeThreadColor("#000000", message.threadID, (err) => {
@@ -287,10 +252,10 @@ login({appState: appstate, forceLogin: true}, (err, api) => {
                 }
             }
 
-            if (adminMode[message.threadID] && adminCommands.includes(command)) {
+            if (commands[command] && commands[command].admin_only) {
                 const isUserAdmin = await isAdmin(api, message.senderID, message.threadID);
                 if (!isUserAdmin) {
-                    api.sendMessage(commands.admin_only, message.threadID);
+                    api.sendMessage("Lệnh này chỉ dành cho admin.", message.threadID);
                     return;
                 }
             }
