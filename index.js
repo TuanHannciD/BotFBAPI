@@ -1,5 +1,6 @@
 const login = require("facebook-chat-api");
 const fs = require("fs");
+const http = require('http');
 
 const appstate = JSON.parse(fs.readFileSync('./data/appstate.json', 'utf8'));
 const commands = JSON.parse(fs.readFileSync('./data/commands.json', 'utf8'));
@@ -251,6 +252,16 @@ login({appState: appstate, forceLogin: true}, (err, api) => {
     }
 
     console.log("Đăng nhập thành công!");
+
+    // Thêm máy chủ HTTP
+    const server = http.createServer((req, res) => {
+        res.writeHead(200, {'Content-Type': 'text/plain'});
+        res.end('Bot đang chạy');
+    });
+
+    server.listen(8080, () => {
+        console.log('Máy chủ đang lắng nghe trên cổng 8080');
+    });
 
     api.listenMqtt(async (err, message) => {
         if(err) return console.error("Lỗi khi lắng nghe tin nhắn:", err);
