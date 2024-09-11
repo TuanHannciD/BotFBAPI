@@ -1,0 +1,52 @@
+{
+  "hello": {
+    "description": "Chào hỏi",
+    "response": "Xin chào! Tôi là Trùm. Rất vui được gặp bạn!"
+  },
+  "help": {
+    "description": "Xem danh sách lệnh",
+    "response": "Đây là danh sách các lệnh:"
+  },
+  "time": {
+    "description": "Xem giờ hiện tại",
+    "response": "Bây giờ là: "
+  },
+  ".admin": {
+    "description": "Bật/tắt chế độ admin (chỉ dành cho admin)",
+    "response": "Chế độ admin đã được {status}."
+  },
+  "kick": {
+    "description": "Kick người dùng khỏi nhóm",
+    "response": "Đã kick {user} khỏi nhóm.",
+    "admin_only": true
+  },
+  "ban": {
+    "description": "Cấm người dùng khỏi nhóm",
+    "response": "Đã cấm {user} khỏi nhóm.",
+    "admin_only": true
+  },
+  "unban": {
+    "description": "Bỏ cấm người dùng",
+    "response": "Đã bỏ cấm người dùng có ID {user_id}.",
+    "admin_only": true
+  },
+  "mute": {
+    "description": "Tắt tiếng người dùng",
+    "response": "Đã tắt tiếng {user}.",
+    "admin_only": true
+  },
+  "unmute": {
+    "description": "Bỏ tắt tiếng người dùng",
+    "response": "Đã bỏ tắt tiếng {user}.",
+    "admin_only": true
+  },
+  "setbd": {
+    "description": "Đổi biệt danh của người dùng",
+    "response": "Đã đổi biệt danh của {user} thành '{nickname}'.",
+    "usage": "setbd @người_dùng biệt_danh_mới"
+  },
+  ".ping": {
+    "description": "Gửi thông báo đến tất cả thành viên trong nhóm",
+    "response": "Đã gửi thông báo: {message}"
+  }
+}
