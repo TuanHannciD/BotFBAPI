@@ -84,12 +84,11 @@ function changeNickname(api, nickname, threadID, userID) {
 }
 
 function createWelcomeMessage(userName, threadName, memberCount, formattedDate, formattedTime) {
-    return `️
-    [🇻🇳] Xin chào ${userName}!
-    [🇻🇳] Chào mừng bạn đến với nhóm | ${threadName} |
-    [🇻🇳] Bạn là thành viên thứ ${memberCount} của nhóm 
-    [🇻🇳] Chúc bạn có một ${getCurrentTimePeriod()} vui vẻ
-    [🇻🇳] Ngày vào: ${formattedDate}||${formattedTime}`;
+    return `️[🇻🇳] Xin chào ${userName}!
+[🇻🇳] Chào mừng bạn đến với nhóm | ${threadName} |
+[🇻🇳] Bạn là thành viên thứ ${memberCount} của nhóm 
+[🇻🇳] Chúc bạn có một ${getCurrentTimePeriod()} vui vẻ
+[🇻🇳] Ngày vào: ${formattedDate}||${formattedTime}`;
 }
 
 function createMentions(userName, userID, welcomeMessage) {
