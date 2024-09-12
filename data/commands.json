@@ -3,11 +3,12 @@
     "description": "Chào hỏi",
     "response": "Xin chào! Tôi là Trùm. Rất vui được gặp bạn!"
   },
-  "help": {
+  ".help": {
     "description": "Xem danh sách lệnh",
-    "response": "Đây là danh sách các lệnh:"
+    "response": "Đây là danh sách các lệnh:",
+    "usage": ".help"
   },
-  "time": {
+  ".time": {
     "description": "Xem giờ hiện tại",
     "response": "Bây giờ là: "
   },
@@ -16,49 +17,49 @@
     "response": "Chế độ admin đã được {status}.",
     "admin_only": true
   },
-  "kick": {
+  ".kick": {
     "description": "Kick người dùng khỏi nhóm",
     "response": "Đã kick {user} khỏi nhóm.",
     "admin_only": true,
     "usage": "kick @người_dùng"
   },
-  "ban": {
+  ".ban": {
     "description": "Cấm người dùng khỏi nhóm",
     "response": "Đã cấm {user} khỏi nhóm.",
     "admin_only": true,
     "usage": "ban @người_dùng"
   },
-  "unban": {
+  ".unban": {
     "description": "Bỏ cấm người dùng",
     "response": "Đã bỏ cấm người dùng có ID {user_id}.",
     "admin_only": true,
     "usage": "unban ID_người_dùng"
   },
-  "mute": {
+  ".mute": {
     "description": "Tắt tiếng người dùng",
     "response": "Đã tắt tiếng {user}.",
     "admin_only": true,
     "usage": "mute @người_dùng"
   },
-  "unmute": {
+  ".unmute": {
     "description": "Bỏ tắt tiếng người dùng",
     "response": "Đã bỏ tắt tiếng {user}.",
     "admin_only": true,
     "usage": "unmute @người_dùng"
   },
-  "setbd": {
+  ".setbd": {
     "description": "Đổi biệt danh của người dùng",
     "response": "Đã đổi biệt danh của {user} thành '{nickname}'.",
-    "usage": "setbd @người_dùng biệt_danh_mới"
+    "usage": ".setbd [@người_dùng hoặc @me] biệt_danh_mới"
   },
   ".ping": {
     "description": "Gửi thông báo đến tất cả thành viên trong nhóm",
     "response": "Đã gửi thông báo: {message}",
     "usage": ".ping nội_dung_thông_báo"
   },
-  "changecolor": {
-    "description": "Thay đổi màu nhóm chat",
+  ".changecolor": {
+    "description": "Thay đổi màu nhóm chat ngẫu nhiên",
     "response": "Đã thay đổi màu nhóm chat thành công.",
-    "usage": "changecolor"
+    "usage": ".changecolor"
   }
 }
