@@ -61,5 +61,10 @@
     "description": "Thay đổi màu nhóm chat ngẫu nhiên",
     "response": "Đã thay đổi màu nhóm chat thành công.",
     "usage": ".changecolor"
+  },
+  ".setidgame": {
+    "description": "Cập nhật ID game của người dùng",
+    "response": "Đã cập nhật ID game của {user} thành: {newGameId}",
+    "usage": ".setidgame [@người_dùng hoặc @me hoặc để trống] id_game_mới"
   }
 }

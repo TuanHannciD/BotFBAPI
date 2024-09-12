@@ -86,6 +86,8 @@ async function handleMessage(api, err, message) {
     handleCommand(api, message, command, commandArgs, taggedUser, contentAfterTag, contentAfterCommand);
 }
 
+const { handleIdCommand, handleSetIdGameCommand } = require('./src/handleIDGame.js');
+
 function handleCommand(api, message, command, commandArgs, taggedUser, contentAfterTag, contentAfterCommand) {
     const commandHandlers = {
         'hello': () => api.sendMessage(commands.hello.response, message.threadID),
@@ -98,14 +100,19 @@ function handleCommand(api, message, command, commandArgs, taggedUser, contentAf
         '.mute': () => handleMuteCommand(api, message, taggedUser),
         '.unmute': () => handleUnmuteCommand(api, message, taggedUser),
         '.setbd': () => handleSetBdCommand(api, message, taggedUser, contentAfterTag),
-        '.ping': () => handlePingCommand(api, message, contentAfterCommand)
+        '.ping': () => handlePingCommand(api, message, contentAfterCommand),
+        'id': () => handleIdCommand(api, message, taggedUser),
+        '.setidgame': async () => {
+            console.log("Gọi handleSetIdGameCommand với:", { message, taggedUser, contentAfterTag, commands });
+            await handleSetIdGameCommand(api, message, taggedUser, contentAfterTag, commands);
+        }
     };
 
     const handler = commandHandlers[command];
     if (handler) {
         handler();
     } else {
-
+        // Xử lý khi không tìm thấy lệnh
     }
 }
 
